@@ -1,5 +1,4 @@
-name: /Users/hannahcussen/Library/CloudStorage/OneDrive-Stanford/2022-2023 - Senior/Fall
-  2022/CS 221/Axon-Guidance-Simulation/env
+name: axon-env
 channels:
   - defaults
 dependencies:
@@ -18,5 +17,3 @@ dependencies:
   - wheel=0.37.1=pyhd3eb1b0_0
   - xz=5.2.6=hca72f7f_0
   - zlib=1.2.13=h4dc903c_0
-prefix: /Users/hannahcussen/Library/CloudStorage/OneDrive-Stanford/2022-2023 - Senior/Fall
-  2022/CS 221/Axon-Guidance-Simulation/env

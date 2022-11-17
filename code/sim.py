@@ -1,19 +1,21 @@
 from axon import Axon
 from environment import Environment
 
+N_SIMULATION_STEPS = 10
+
 def main():
     env = Environment()
 
     env.calibrateGrid()
-    env.print(midline=True)
+    axon = Axon()
 
-    for j in range(env.ncols - 3):
-        square = env.getGridSquare(1, j)
-        square.hasAxonShaft = True
-    square = env.getGridSquare(0, )
-    square.hasAxonShaft = True
-    print()
-    env.print(midline=True)
+    x, y = 1, 0
+    for i in range(N_SIMULATION_STEPS):
+        env.getGridSquare(x, y).hasAxonShaft = True
+        move = axon.chooseAction(env, x, y)
+        x, y = move
+        env.print(midline=True)
+        print()
 
-if __name__ == "main":
+if __name__ == "__main__":
     main()

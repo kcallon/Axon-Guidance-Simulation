@@ -3,7 +3,7 @@ class Axon:
     def __init__(self) -> None:
         # will need to build in setting the geneConfig with other configs - eventually
         self.geneConfig = {
-            'COMM': True,
+            'COMM': True, #True corresponds to Wildtype
             'DCC': True,
             'ROBO': True,
         }
@@ -54,4 +54,10 @@ class Axon:
         
         self.ensureGeneConsistency()
 
-    
+    def chooseAction(self, env: Environment, x: int, y: int):
+        successors = env.getLegalMoves(x, y)
+        rewards = [(i, self.reward(env.getGridSquare(s[0], s[1]))) for i, s in list(enumerate(successors))]
+        max_reward = max(rewards, key=lambda x: x[1])
+        max_reward_successor = successors[max_reward[0]]
+
+        return max_reward_successor

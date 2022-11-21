@@ -27,7 +27,7 @@ class Axon:
             self.activatedGenes['ROBO'] = True
         
         # ensure that knocked-out genes are never set to True 
-        for gene, value in self.geneConfig:
+        for gene, value in self.geneConfig.items():
             if not value:
                 self.activatedGenes[gene] = False
 

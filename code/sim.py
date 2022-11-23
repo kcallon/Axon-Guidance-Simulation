@@ -17,6 +17,10 @@ def main():
     
         env.print(midline=True)
         print()
+
+        if (x, y) == env.synapticTargetLocation:
+            print("end state")
+            break
         
 
 if __name__ == "__main__":

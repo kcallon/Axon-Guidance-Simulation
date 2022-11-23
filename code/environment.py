@@ -19,8 +19,8 @@ class Environment:
         }
 
         self.middle = 0.2 #the fraction of cells considered the midline
-        self.nrows = 2 + 1 #the number of rows in the standard grid, plus one for the synaptic target
-        self.ncols = 10
+        self.nrows = 10 + 1 #the number of rows in the standard grid, plus one for the synaptic target
+        self.ncols = 20
         self.grid = []
         self.left_midline_edge = floor((0.5 - self.middle / 2) * self.ncols)
         self.right_midline_edge = floor((0.5 + self.middle / 2) * self.ncols)
@@ -56,7 +56,6 @@ class Environment:
         return x >= x_valid and x < self.nrows and y >= 0 and y < self.ncols
 
     def calibrateGrid(self):
-        # def concentration(a: Tuple(int, int, float), x: Tuple(int, int), rate: float) -> float:
         def concentration(a: Tuple, x: Tuple, rate: float) -> float:
             """ calculates the concentration at x given the initial concentration at location a and a decay rate
 
@@ -70,8 +69,7 @@ class Environment:
             """
             C_0 = a[2]
             d = dist(a[0:2], x)
-            return C_0 * (rate ** d)
-            
+            return C_0 * (rate ** d)     
 
         def placeSynapticTarget(x, y):
             """Procedural function to place the synaptic target
@@ -134,14 +132,13 @@ class Environment:
         placeSynapticTarget(self.synapticTargetLocation[0], self.synapticTargetLocation[1])
         diffuseTargetLigand(self.synapticTargetLocation[0], self.synapticTargetLocation[1], self.nrows)
 
-
-        
             
     def getGridSquare(self, x, y, full=False) -> GridSquare:
         """get the gridSquare at x, y
         """
         if self.inBounds(x, y, full=full):
             return self.grid[x][y]
+        print("warning: trying to access outside of the grid")
         return None
         
     
@@ -166,18 +163,7 @@ class Environment:
         elif right: return "right"
         return "middle"
 
-    def getLegalMoves(self, x, y) -> List:
-        actions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-
-        #apply actions to x, y tuple
-        potential_successors = []
-        for action in actions:
-            potential_successors.append(tuple([sum(tup) for tup in zip((x, y), action)]))
-        #if any are outside of the bounds of the grid or have an axon already grown in them, get rid of them
-        
-        successors = [a for a in potential_successors if self.inBounds(a[0], a[1]) \
-            and not self.getGridSquare(a[0], a[1]).hasAxonShaft]
-        return successors
+    
 
     def print(self, midline = False, conc=False):
         """debug function 
@@ -190,7 +176,7 @@ class Environment:
                 row = self.grid[i]
                 r = []
                 if i == 0:
-                    r = ['T' if j.targetLigand == self.initialConcentrations['targetLigand'] else ' ' for j in row]
+                    r = ['T' if j.targetLigand == self.initialConcentrations['targetLigand'] else 'x' if j.hasAxonShaft else ' ' for j in row]
                 else: 
                     r = ['x' if j.hasAxonShaft else ' ' for j in row ]
                 if midline:

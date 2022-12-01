@@ -21,6 +21,7 @@ def main():
         if (x, y) == env.synapticTargetLocation:
             print("end state")
             break
+    # env.print(midline=True, conc=True)
         
 
 if __name__ == "__main__":

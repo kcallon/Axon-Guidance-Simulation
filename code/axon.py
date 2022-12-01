@@ -98,3 +98,15 @@ class Axon:
             print(f'choice: {max_reward_successor} reward: {max_reward[1]}')
 
         return max_reward_successor
+
+    def chooseActionTurnLess(self, env: Environment, x: int, y: int, verbose: bool =False):
+        def get4DirectionMoves(x, y):
+            actions = self.actions()
+            potential_successors = []
+            for action in actions:
+                potential_successors.append(tuple([sum(tup) for tup in zip((x, y), action)]))
+            return [a for a in potential_successors if \
+                    env.inBounds(a[0], a[1], full = True)]
+        
+        options = get4DirectionMoves(x, y)
+        pass

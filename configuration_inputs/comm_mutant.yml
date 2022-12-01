@@ -1,0 +1,8 @@
+geneInput:
+  Comm: True
+  DCC: True
+  Robo: True
+envInput:
+  netrin: True
+  slit: True
+  shh: True

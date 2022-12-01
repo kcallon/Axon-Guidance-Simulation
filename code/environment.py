@@ -10,11 +10,11 @@ class GridSquare:
         self.hasAxonShaft = False
 
 class Environment:
-    def __init__(self) -> None:
+    def __init__(self, netrin_input, slit_input, shh_input) -> None:
         self.geneConfig = {
-            'netrin': True,
-            'slit': True,
-            'shh': True,
+            'netrin': netrin_input,
+            'slit': slit_input,
+            'shh': shh_input,
             'targetLigand': True
         }
 

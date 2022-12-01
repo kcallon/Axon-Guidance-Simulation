@@ -1,12 +1,12 @@
 from environment import GridSquare, Environment
 from typing import List, Tuple
 class Axon:
-    def __init__(self) -> None:
+    def __init__(self, comm_config, dcc_config, robo_config) -> None:
         # TODO will need to build in setting the geneConfig with other configs - eventually
         self.geneConfig = {
-            'COMM': True, #True corresponds to Wildtype
-            'DCC': True,
-            'ROBO': True,
+            'COMM': comm_config, #True corresponds to Wildtype
+            'DCC': dcc_config,
+            'ROBO': robo_config,
         }
         self.activatedGenes = {
             'COMM': True,

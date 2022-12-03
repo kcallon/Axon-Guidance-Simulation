@@ -20,11 +20,13 @@ class Environment:
 
         self.middle = 0.2 #the fraction of cells considered the midline
         self.nrows = 10 + 1 #the number of rows in the standard grid, plus one for the synaptic target
-        self.ncols = 20
+        self.ncols = 10
         self.grid = []
         self.left_midline_edge = floor((0.5 - self.middle / 2) * self.ncols)
         self.right_midline_edge = floor((0.5 + self.middle / 2) * self.ncols)
         self.synapticTargetLocation = (0, self.right_midline_edge + 1 )
+
+        self.max_axon_length = self.nrows + self.ncols - 1 
 
         self.initialConcentrations = {
             'netrin': 1,
@@ -187,7 +189,8 @@ class Environment:
                     print(''.join(['-' for j in row]) + "--")
         else:
             for row in self.grid:
-                r = [f'[{j.netrin}, {j.shh}, {j.slit}, {j.targetLigand}]' for j in row]
+                # r = [f'[{j.netrin}, {j.shh}, {j.slit}, {j.targetLigand}]' for j in row]
+                r = [f'[{j.targetLigand:.1e}]' for j in row]
                 if midline:
                     r.insert(self.left_midline_edge, '|')
                     r.insert(self.right_midline_edge + 1, '|')

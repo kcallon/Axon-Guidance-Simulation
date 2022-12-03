@@ -21,26 +21,30 @@ class Axon:
         }
         self.x = 0
         self.y = 0
+
+        self.totalReward = 0
     
     
 
     def reward(self, square: GridSquare) -> float:
         """given a GridSquare, use the activatedGenes to return the appropriate reward
 
+        The reward is a linear combination of the ligand concentration * that ligand's weight 
+
         Returns:
             a float value of the reward
         """
-        totalReward = 0
+        reward = 0
         if self.activatedGenes['DCC']:
-            totalReward += self.ligandRewardWeights['netrin'] * square.netrin + \
+            reward += self.ligandRewardWeights['netrin'] * square.netrin + \
                             self.ligandRewardWeights['shh'] * square.shh
         
         if self.activatedGenes['ROBO']:
-            totalReward += -1 * self.ligandRewardWeights['slit'] * square.slit
+            reward += -1 * self.ligandRewardWeights['slit'] * square.slit
         
-        totalReward += self.ligandRewardWeights['targetLigand'] * square.targetLigand
+        reward += self.ligandRewardWeights['targetLigand'] * square.targetLigand
 
-        return totalReward
+        return reward
     
     def modulateGenes(self, square: GridSquare): 
         def ensureGeneConsistency() -> None:
@@ -97,4 +101,17 @@ class Axon:
             print(f'rewards: {rewards}')
             print(f'choice: {max_reward_successor} reward: {max_reward[1]}')
 
+        self.totalReward += max_reward[1]
         return max_reward_successor
+
+    def chooseActionTurnLess(self, env: Environment, x: int, y: int, verbose: bool =False):
+        def get4DirectionMoves(x, y):
+            actions = self.actions()
+            potential_successors = []
+            for action in actions:
+                potential_successors.append(tuple([sum(tup) for tup in zip((x, y), action)]))
+            return [a for a in potential_successors if \
+                    env.inBounds(a[0], a[1], full = True)]
+        
+        options = get4DirectionMoves(x, y)
+        pass

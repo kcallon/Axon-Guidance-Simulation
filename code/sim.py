@@ -14,7 +14,8 @@ def main(config_file):
     axon = Axon(comm, dcc, robo)
 
     x, y = env.nrows - 1, 0
-    for sim_step in range(env.max_axon_length):
+    sim_step = 0
+    while sim_step < env.max_axon_length:
         x, y = axon.chooseAction(env, x, y, verbose=True)
         env.getGridSquare(x, y, full=True).hasAxonShaft = True
         axon.modulateGenes(env.getGridSquare(x, y, full=True))
@@ -22,9 +23,12 @@ def main(config_file):
         env.print(midline=True)
         print()
 
+        sim_step += 1
         if x == 0: # end state
             break
-    # env.print(midline=True, conc=True)
+    
+    print(f'end state - {"max axon length" if sim_step == env.max_axon_length else "crossed out of grid"} - reached!')
+    print(f'total rewards gained: {axon.totalReward}')
         
 
 if __name__ == "__main__":

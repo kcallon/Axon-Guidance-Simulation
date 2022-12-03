@@ -24,6 +24,7 @@ class Environment:
         self.grid = []
         self.left_midline_edge = floor((0.5 - self.middle / 2) * self.ncols)
         self.right_midline_edge = floor((0.5 + self.middle / 2) * self.ncols)
+        self.middle = self.ncols // 2
         self.synapticTargetLocation = (0, self.right_midline_edge + 1 )
 
         self.max_axon_length = self.nrows + self.ncols - 1 
@@ -93,24 +94,21 @@ class Environment:
                 row = []
                 for j in range(self.ncols):
                     square = GridSquare()
-                    if self.inMidline(0, j) == "left":
-                        edge = (0, self.left_midline_edge, self.initialConcentrations['netrin'])
+                    if j < self.middle:
+                        edge = (0, self.middle, self.initialConcentrations['netrin'])
                         square.netrin = concentration(edge, (0, j), self.decayRates['netrin'])
 
-                        edge = (0, self.left_midline_edge, self.initialConcentrations['shh'])
+                        edge = (0, self.middle, self.initialConcentrations['shh'])
                         square.shh = concentration(edge, (0, j), self.decayRates['shh'])
-                    elif self.inMidline(0, j) == "right":
-                        edge = (0, self.right_midline_edge, self.initialConcentrations['netrin'])
-                        square.netrin = concentration(edge, (0, j), self.decayRates['netrin'])
-
-                        edge = (0, self.right_midline_edge, self.initialConcentrations['shh'])
-                        square.shh = concentration(edge, (0, j), self.decayRates['shh'])
-                    elif self.inMidline(0, j) == "middle":
-                        square.slit = self.initialConcentrations['slit']
-                        square.netrin = self.initialConcentrations['netrin']
-                        square.shh = self.initialConcentrations['shh']
                     else:
-                        print("something is wrong")
+                        edge = (0, self.middle, self.initialConcentrations['netrin'])
+                        square.netrin = concentration(edge, (0, j), self.decayRates['netrin'])
+
+                        edge = (0, self.middle, self.initialConcentrations['shh'])
+                        square.shh = concentration(edge, (0, j), self.decayRates['shh'])
+                    
+                    if j >= self.left_midline_edge and j < self.right_midline_edge:
+                        square.slit = self.initialConcentrations['slit']
 
                     row.append(square)
                 self.grid.append(row)
@@ -167,7 +165,7 @@ class Environment:
 
     
 
-    def print(self, midline = False, conc=False):
+    def print(self, midline = False, conc=False, ligand=''):
         """debug function 
 
         Args:
@@ -189,12 +187,20 @@ class Environment:
                     print(''.join(['-' for j in row]) + "--")
         else:
             for row in self.grid:
-                # r = [f'[{j.netrin}, {j.shh}, {j.slit}, {j.targetLigand}]' for j in row]
-                r = [f'[{j.targetLigand:.1e}]' for j in row]
+                r = []
+                if ligand == 'netrin':
+                    r = [j.netrin for j in row]
+                elif ligand == 'shh':
+                    r = [j.shh for j in row]
+                elif ligand == 'slit':
+                    r = [j.slit for j in row]
+                elif ligand == 'target':
+                    r = [j.targetLigand for j in row]
+                r = [str(x) for x in r]
                 if midline:
                     r.insert(self.left_midline_edge, '|')
                     r.insert(self.right_midline_edge + 1, '|')
-                print(''.join(r))
+                print(','.join(r))
 
 
 

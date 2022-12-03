@@ -3,7 +3,7 @@ import yaml
 from axon import Axon
 from environment import Environment
 
-N_SIMULATION_STEPS = 25
+MAX_AXON_LENGTH = 25
 
 
 def main(config_file):
@@ -17,7 +17,7 @@ def main(config_file):
     axon = Axon(comm, dcc, robo)
 
     x, y = env.nrows - 1, 0
-    for i in range(N_SIMULATION_STEPS):
+    for i in range(MAX_AXON_LENGTH):
         x, y = axon.chooseAction(env, x, y, verbose=True)
         env.getGridSquare(x, y, full=True).hasAxonShaft = True
         axon.modulateGenes(env.getGridSquare(x, y, full=True))
@@ -25,8 +25,7 @@ def main(config_file):
         env.print(midline=True)
         print()
 
-        if (x, y) == env.synapticTargetLocation:
-            print("end state")
+        if x == 0:
             break
     # env.print(midline=True, conc=True)
         

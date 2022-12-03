@@ -3,9 +3,6 @@ import yaml
 from axon import Axon
 from environment import Environment
 
-MAX_AXON_LENGTH = 25
-
-
 def main(config_file):
     gene_dict = config_file['geneInput']
     env_dict = config_file['envInput']
@@ -17,7 +14,7 @@ def main(config_file):
     axon = Axon(comm, dcc, robo)
 
     x, y = env.nrows - 1, 0
-    for i in range(MAX_AXON_LENGTH):
+    for sim_step in range(env.max_axon_length):
         x, y = axon.chooseAction(env, x, y, verbose=True)
         env.getGridSquare(x, y, full=True).hasAxonShaft = True
         axon.modulateGenes(env.getGridSquare(x, y, full=True))
@@ -25,7 +22,7 @@ def main(config_file):
         env.print(midline=True)
         print()
 
-        if x == 0:
+        if x == 0: # end state
             break
     # env.print(midline=True, conc=True)
         

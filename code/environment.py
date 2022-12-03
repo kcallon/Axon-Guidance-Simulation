@@ -26,6 +26,8 @@ class Environment:
         self.right_midline_edge = floor((0.5 + self.middle / 2) * self.ncols)
         self.synapticTargetLocation = (0, self.right_midline_edge + 1 )
 
+        self.max_axon_length = self.nrows + self.ncols - 1 
+
         self.initialConcentrations = {
             'netrin': 1,
             'slit': 1,

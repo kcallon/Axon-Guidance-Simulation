@@ -1,5 +1,5 @@
 geneInput:
-  Comm: True
+  Comm: False
   DCC: True
   Robo: True
 envInput:

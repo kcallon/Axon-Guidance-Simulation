@@ -25,7 +25,7 @@ class Environment:
         self.left_midline_edge = floor((0.5 - self.middle / 2) * self.ncols)
         self.right_midline_edge = floor((0.5 + self.middle / 2) * self.ncols)
         self.middle = self.ncols // 2
-        self.synapticTargetLocation = (0, self.right_midline_edge )
+        self.synapticTargetLocation = (0, self.right_midline_edge + 1)
 
         self.max_axon_length = self.nrows + self.ncols - 1 
 

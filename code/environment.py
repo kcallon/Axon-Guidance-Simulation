@@ -25,7 +25,7 @@ class Environment:
         self.left_midline_edge = floor((0.5 - self.middle / 2) * self.ncols)
         self.right_midline_edge = floor((0.5 + self.middle / 2) * self.ncols)
         self.middle = self.ncols // 2
-        self.synapticTargetLocation = (0, self.right_midline_edge + 1 )
+        self.synapticTargetLocation = (0, self.right_midline_edge )
 
         self.max_axon_length = self.nrows + self.ncols - 1 
 
@@ -74,23 +74,8 @@ class Environment:
             d = dist(a[0:2], x)
             return C_0 * (rate ** d)     
 
-        def placeSynapticTarget(x, y):
-            """Procedural function to place the synaptic target
-
-            Args:
-                x : 
-                y (_type_): _description_
-            """
-            row = []
-            for j in range(self.ncols):
-                square = GridSquare()
-                if j == y:
-                    square.targetLigand = self.initialConcentrations['targetLigand']
-                row.append(square)
-            self.grid.insert(x, row)
-
         def createStandardGrid():
-            for i in range(1, self.nrows):
+            for i in range(0, self.nrows):
                 row = []
                 for j in range(self.ncols):
                     square = GridSquare()
@@ -113,24 +98,33 @@ class Environment:
                     row.append(square)
                 self.grid.append(row)
 
-        def diffuseTargetLigand(x, y, r):
-            # go in a circle around x, y
-            # radially diffuse the targetLigand 
-            synapticTarget = (self.synapticTargetLocation[0], \
-                                self.synapticTargetLocation[1], \
-                                self.initialConcentrations['targetLigand'])
-            for i in range(x - r, x + r):
-                for j in range(y - r, y + r):
-                    if self.inBounds(i, j, full=True):
-                        square = self.getGridSquare(i, j, full=True)
-                        square.targetLigand = concentration(synapticTarget, (i, j), self.decayRates['targetLigand'])
+        def placeSynapticTarget(x, y):
+            """Procedural function to place the synaptic target
 
+            Args:
+                x : 
+                y (_type_): _description_
+            """
+            def diffuseTargetLigand(x, y, r):
+                # go in a circle around x, y
+                # radially diffuse the targetLigand 
+                synapticTarget = (self.synapticTargetLocation[0], \
+                                    self.synapticTargetLocation[1], \
+                                    self.initialConcentrations['targetLigand'])
+                for i in range(x - r, x + r):
+                    for j in range(y - r, y + r):
+                        if self.inBounds(i, j, full=True):
+                            square = self.getGridSquare(i, j, full=True)
+                            square.targetLigand = concentration(synapticTarget, (i, j), self.decayRates['targetLigand'])
 
+            square = self.getGridSquare(x, y, full = True)
+            square.targetLigand = self.initialConcentrations['targetLigand']
+            diffuseTargetLigand(x, y, self.nrows)
 
         
         createStandardGrid()
         placeSynapticTarget(self.synapticTargetLocation[0], self.synapticTargetLocation[1])
-        diffuseTargetLigand(self.synapticTargetLocation[0], self.synapticTargetLocation[1], self.nrows)
+
 
             
     def getGridSquare(self, x, y, full=False) -> GridSquare:

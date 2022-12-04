@@ -67,7 +67,6 @@ class Axon:
             self.activatedGenes['DCC'] = False
         
         # when first cross into midline, comm OFF
-        print(self.geneConfig['COMM'])
         if square.slit > 0 and self.geneConfig['COMM']:
             self.activatedGenes['COMM'] = False
         

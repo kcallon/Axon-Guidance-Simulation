@@ -26,7 +26,7 @@ class Axon:
     
     
 
-    def reward(self, square: GridSquare) -> float:
+    def reward(self, slit, square: GridSquare) -> float:
         """given a GridSquare, use the activatedGenes to return the appropriate reward
 
         The reward is a linear combination of the ligand concentration * that ligand's weight 
@@ -39,14 +39,14 @@ class Axon:
             reward += self.ligandRewardWeights['netrin'] * square.netrin + \
                             self.ligandRewardWeights['shh'] * square.shh
         
-        if self.activatedGenes['ROBO']:
+        if self.activatedGenes['ROBO'] and slit: #should make an add for if slit is not
             reward += -1 * self.ligandRewardWeights['slit'] * square.slit
         
         reward += self.ligandRewardWeights['targetLigand'] * square.targetLigand
 
         return reward
     
-    def modulateGenes(self, square: GridSquare): 
+    def modulateGenes(self, square: GridSquare):
         def ensureGeneConsistency() -> None:
             """Ensure that the genes are consistent with eachother
                 Enforces the rule: COMM == not ROBO
@@ -67,7 +67,8 @@ class Axon:
             self.activatedGenes['DCC'] = False
         
         # when first cross into midline, comm OFF
-        if square.slit > 0: 
+        print(self.geneConfig['COMM'])
+        if square.slit > 0 and self.geneConfig['COMM']:
             self.activatedGenes['COMM'] = False
         
         ensureGeneConsistency()
@@ -91,7 +92,7 @@ class Axon:
 
     def chooseAction(self, env: Environment, x: int, y: int, verbose: bool =False):
         successors = self.getLegalMoves(env, x, y)
-        rewards = [(i, self.reward(env.getGridSquare(s[0], s[1], full=True))) for i, s in list(enumerate(successors))]
+        rewards = [(i, self.reward(env.geneConfig['slit'], env.getGridSquare(s[0], s[1], full=True))) for i, s in list(enumerate(successors))]
         max_reward = max(rewards, key=lambda x: x[1])
         max_reward_successor = successors[max_reward[0]]
 

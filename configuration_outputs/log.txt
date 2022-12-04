@@ -1,4 +1,4 @@
-wildtype	133
-roundabout	134
-slit	131
-comm	131
+wildtype	0
+roundabout	19
+slit	4
+comm	0

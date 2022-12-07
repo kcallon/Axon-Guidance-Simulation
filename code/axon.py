@@ -1,17 +1,19 @@
 from environment import GridSquare, Environment
 from typing import List, Tuple
 class Axon:
-    def __init__(self, comm_config, dcc_config, robo_config) -> None:
+    def __init__(self, comm_config, dcc_config, robo1_config, robo2_config) -> None:
         # TODO will need to build in setting the geneConfig with other configs - eventually
         self.geneConfig = {
             'COMM': comm_config, #True corresponds to Wildtype
             'DCC': dcc_config,
-            'ROBO': robo_config,
+            'ROBO1': robo1_config,
+            'ROBO2': robo2_config,
         }
         self.activatedGenes = {
             'COMM': True,
             'DCC': True,
-            'ROBO': False,
+            'ROBO1': False,
+            'ROBO2': robo2_config,
         }
         self.ligandRewardWeights = {
             'netrin': 1,
@@ -26,7 +28,7 @@ class Axon:
     
     
 
-    def reward(self, slit, square: GridSquare) -> float:
+    def reward(self, slit, robo_wildtype, square: GridSquare) -> float:
         """given a GridSquare, use the activatedGenes to return the appropriate reward
 
         The reward is a linear combination of the ligand concentration * that ligand's weight 
@@ -35,13 +37,17 @@ class Axon:
             a float value of the reward
         """
         reward = 0
+        print(self.activatedGenes['DCC'])
+        print(self.activatedGenes['ROBO1'])
+        print(self.activatedGenes['ROBO2'])
+        print(self.activatedGenes['COMM'])
         if self.activatedGenes['DCC']:
             reward += self.ligandRewardWeights['netrin'] * square.netrin + \
                             self.ligandRewardWeights['shh'] * square.shh
         
-        if self.activatedGenes['ROBO'] and slit: #should make an add for if slit is not
+        if self.activatedGenes['ROBO1'] and slit:
             reward += -1 * self.ligandRewardWeights['slit'] * square.slit
-        
+
         reward += self.ligandRewardWeights['targetLigand'] * square.targetLigand
 
         return reward
@@ -52,23 +58,31 @@ class Axon:
                 Enforces the rule: COMM == not ROBO
                 ROBO is default on 
             """
+            if square.slit == 0 and not self.geneConfig['ROBO2'] and not self.activatedGenes['COMM']:
+                self.activatedGenes['COMM'] = True
+
             if self.activatedGenes['COMM']:
                 # send ROBO to the lysosome!
-                self.activatedGenes['ROBO'] = False
+                self.activatedGenes['ROBO1'] = False
             else:
-                self.activatedGenes['ROBO'] = True
+                self.activatedGenes['ROBO1'] = True
             
             # ensure that knocked-out genes are never set to True 
             for gene, value in self.geneConfig.items():
                 if not value:
                     self.activatedGenes[gene] = False
 
-        if self.activatedGenes['ROBO'] and square.slit > 0:
+        # axon behaves normally if ROBO2 is set to true
+        if self.activatedGenes['ROBO1'] and square.slit > 0:
             self.activatedGenes['DCC'] = False
-        
+
+        if not self.geneConfig['ROBO2'] and square.slit == 0:
+            self.activatedGenes['DCC'] = True
         # when first cross into midline, comm OFF
         if square.slit > 0 and self.geneConfig['COMM']:
             self.activatedGenes['COMM'] = False
+
+
         
         ensureGeneConsistency()
 
@@ -91,7 +105,7 @@ class Axon:
 
     def chooseAction(self, env: Environment, x: int, y: int, verbose: bool =False):
         successors = self.getLegalMoves(env, x, y)
-        rewards = [(i, self.reward(env.geneConfig['slit'], env.getGridSquare(s[0], s[1], full=True))) for i, s in list(enumerate(successors))]
+        rewards = [(i, self.reward(env.geneConfig['slit'], self.geneConfig['ROBO2'], env.getGridSquare(s[0], s[1], full=True))) for i, s in list(enumerate(successors))]
         max_reward = max(rewards, key=lambda x: x[1])
         max_reward_successor = successors[max_reward[0]]
 

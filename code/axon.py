@@ -37,10 +37,7 @@ class Axon:
             a float value of the reward
         """
         reward = 0
-        print(self.activatedGenes['DCC'])
-        print(self.activatedGenes['ROBO1'])
-        print(self.activatedGenes['ROBO2'])
-        print(self.activatedGenes['COMM'])
+
         if self.activatedGenes['DCC']:
             reward += self.ligandRewardWeights['netrin'] * square.netrin + \
                             self.ligandRewardWeights['shh'] * square.shh
@@ -58,8 +55,6 @@ class Axon:
                 Enforces the rule: COMM == not ROBO
                 ROBO is default on 
             """
-            if square.slit == 0 and not self.geneConfig['ROBO2'] and not self.activatedGenes['COMM']:
-                self.activatedGenes['COMM'] = True
 
             if self.activatedGenes['COMM']:
                 # send ROBO to the lysosome!
@@ -71,19 +66,27 @@ class Axon:
             for gene, value in self.geneConfig.items():
                 if not value:
                     self.activatedGenes[gene] = False
+        # sensing behavior goes here
+
 
         # axon behaves normally if ROBO2 is set to true
         if self.activatedGenes['ROBO1'] and square.slit > 0:
             self.activatedGenes['DCC'] = False
+            # when first cross into midline, comm OFF
 
-        if not self.geneConfig['ROBO2'] and square.slit == 0:
-            self.activatedGenes['DCC'] = True
-        # when first cross into midline, comm OFF
         if square.slit > 0 and self.geneConfig['COMM']:
             self.activatedGenes['COMM'] = False
 
+        # If there's a roundabout mutant
+        if not self.geneConfig['ROBO2']:
+            # when the axon is not in the midline, it should be attracted to SHH & Netrin and not repelled by slit
+            if square.slit == 0:
+                self.activatedGenes['DCC'] = True
+                self.activatedGenes['COMM'] = True
+            # when the axon is in the midline, it should be repelled by slit
+            if square.slit > 0:
+                self.activatedGenes['COMM'] = False
 
-        
         ensureGeneConsistency()
 
     def actions(self) -> List[Tuple]:

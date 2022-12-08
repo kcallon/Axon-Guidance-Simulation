@@ -14,7 +14,7 @@ def main(config_file):
     ligands = ['netrin', 'slit', 'shh', 'target']
 
     for ligand in ligands:
-        with open(f'../concentration_visualization/{ligand}.csv', 'w') as f:
+        with open(f'concentration_visualization/{ligand}.csv', 'w') as f:
             sys.stdout = f
             env.print(midline=False, conc=True, ligand = ligand)
 

@@ -1,3 +1,5 @@
 axon-env
 env
 code/__pycache__
+.DS_Store
+.idea

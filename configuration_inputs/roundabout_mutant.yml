@@ -1,7 +1,8 @@
 geneInput:
   Comm: True
   DCC: True
-  Robo: False
+  Robo1: True
+  Robo2: False
 envInput:
   netrin: True
   slit: True

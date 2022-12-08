@@ -7,11 +7,11 @@ def main(config_file, verbose=False):
     gene_dict = config_file['geneInput']
     env_dict = config_file['envInput']
     netrin, slit, shh = env_dict['netrin'], env_dict['slit'], env_dict['shh']
-    comm, dcc, robo = gene_dict['Comm'], gene_dict['DCC'], gene_dict['Robo']
+    comm, dcc, robo1, robo2 = gene_dict['Comm'], gene_dict['DCC'], gene_dict['Robo1'], gene_dict['Robo2']
     env = Environment(netrin, slit, shh)
 
     env.calibrateGrid()
-    axon = Axon(comm, dcc, robo)
+    axon = Axon(comm, dcc, robo1, robo2)
 
     x, y = env.nrows - 1, 0
     sim_step = 0

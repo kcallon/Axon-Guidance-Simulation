@@ -1,0 +1,4 @@
+wildtype	0
+roundabout	13
+slit	4
+comm	0

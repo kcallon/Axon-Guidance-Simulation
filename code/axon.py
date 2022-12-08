@@ -2,7 +2,6 @@ from environment import GridSquare, Environment
 from typing import List, Tuple
 class Axon:
     def __init__(self, comm_config, dcc_config, robo1_config, robo2_config) -> None:
-        # TODO will need to build in setting the geneConfig with other configs - eventually
         self.geneConfig = {
             'COMM': comm_config, #True corresponds to Wildtype
             'DCC': dcc_config,
@@ -44,7 +43,7 @@ class Axon:
         
         if self.activatedGenes['ROBO1'] and slit:
             reward += -1 * self.ligandRewardWeights['slit'] * square.slit
-
+        
         reward += self.ligandRewardWeights['targetLigand'] * square.targetLigand
 
         return reward
@@ -121,14 +120,3 @@ class Axon:
         self.totalReward += max_reward[1]
         return max_reward_successor
 
-    def chooseActionTurnLess(self, env: Environment, x: int, y: int, verbose: bool =False):
-        def get4DirectionMoves(x, y):
-            actions = self.actions()
-            potential_successors = []
-            for action in actions:
-                potential_successors.append(tuple([sum(tup) for tup in zip((x, y), action)]))
-            return [a for a in potential_successors if \
-                    env.inBounds(a[0], a[1], full = True)]
-        
-        options = get4DirectionMoves(x, y)
-        pass
